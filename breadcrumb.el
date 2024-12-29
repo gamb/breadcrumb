@@ -332,7 +332,13 @@ to ROOT."
   (let ((l (lambda (&rest _event)
              (interactive)
              ;; TODO: See similar TODO in `bc--format-ipath-node'.
-             (find-file (file-name-directory (expand-file-name path root))))))
+             (let ((directory (file-name-directory (expand-file-name path root)))
+                   (selected-file nil))
+               ;; TODO: Add a customization to replace `find-file function
+               (setq selected-file (completing-read
+                                    "Select a file: "
+                                    (directory-files directory nil "\\`[^.]")))
+               (find-file (expand-file-name selected-file directory))))))
     (propertize p 'face
                 (if more 'bc-project-crumbs-face 'bc-project-leaf-face)
                 'bc-dont-shorten (null more)
